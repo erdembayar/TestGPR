@@ -24,17 +24,17 @@ jobs:
       run: dotnet pack --no-build -c Release erdemDevice/erdemDevice.csproj
     
     - name: Add private GitHub registry to NuGet
-      run: dotnet nuget add source https://nuget.pkg.github.com/erdembayar/index.json -n GPR -u testUser -p ${{ secrets.PUSH_TOKEN }} --store-password-in-clear-text
+      run: dotnet nuget add source https://nuget.pkg.github.com/erdembayar/index.json -n GPR -u erdembayar -p ${{ secrets.PUSH_TOKEN }} --store-password-in-clear-text
       
     - name: Push generated package to GitHub registry
       run: |
         for f in erdemDevice/bin/Release/*.nupkg
         do
-          dotnet nuget push $f --source "GPR" --skip-duplicate --api-key ${{ secrets.PUSH_TOKEN }}
+          dotnet nuget push $f --source "GPR" --skip-duplicate --api-key ${{ secrets.PUSH_TOKEN }} #--skip-duplicate
         done
         
         for f in erdemDevice/bin/Release/*.snupkg
         do
-          dotnet nuget push $f --source "GPR" --skip-duplicate --api-key ${{ secrets.PUSH_TOKEN }}
+          dotnet nuget push $f --source "GPR" --skip-duplicate --api-key ${{ secrets.PUSH_TOKEN }} #--skip-duplicate
         done
       shell: bash
