@@ -7,4 +7,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Text2Xml.Lib" Version="1.1.4" />
+  </ItemGroup>
+
 </Project>
