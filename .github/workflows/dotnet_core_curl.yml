@@ -1,0 +1,45 @@
+name: .NET
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 6.0.x
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Build with dotnet
+      run: dotnet build --no-restore --configuration Release
+    - name: Test
+      run: dotnet test --no-build --verbosity normal
+    - name: Pack 
+      run: dotnet pack --no-build -c Release erdemDevice/erdemDevice.csproj
+            # run: dotnet pack --configuration Release --no-build -p:PackageVersion=${{ env.GitVersion_SemVer}}
+
+    - name: Push generated package to GitHub registry
+      run: |
+        for f in erdemDevice/bin/Release/*.nupkg
+        do
+          echo package=$f
+          # curl -vX PUT -u "[USERNAME]:${{ secrets.PUSH_TOKEN }}" -F package=@erdemDevice/bin/Release/erdemDevice.1.0.0.nupkg https://nuget.pkg.github.com/[USERNAME]/
+          curl -vX PUT -u "erdembayar:${{ secrets.PUSH_TOKEN }}" -F package=@$f https://nuget.pkg.github.com/erdembayar/
+        done
+        
+        for f in erdemDevice/bin/Release/*.snupkg
+        do
+          echo package=$f
+          # curl -vX PUT -u "[USERNAME]:${{ secrets.PUSH_TOKEN }}" -F package=@erdemDevice/bin/Release/erdemDevice.1.0.0.nupkg https://nuget.pkg.github.com/[USERNAME]/
+          # curl -vX PUT -u "erdembayar:${{ secrets.PUSH_TOKEN }}" -F package=@$f https://nuget.pkg.github.com/erdembayar/
+        done
+      shell: bash      
