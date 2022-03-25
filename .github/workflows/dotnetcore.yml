@@ -1,0 +1,40 @@
+name: .NET Core
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Fetch
+      run: git fetch --prune --unshallow
+    - name: Setup .NET Core 6
+      uses: actions/setup-dotnet@v1.7.2
+      with:
+        dotnet-version: 6.0.200
+    - name: Build with dotnet
+      run: dotnet build --configuration Release
+    - name: Test
+      run: dotnet test --no-build -c Release
+    - name: Pack 
+      run: dotnet pack --no-build -c Release erdemDevice/erdemDevice.csproj
+    
+    - name: Add private GitHub registry to NuGet
+      run: dotnet nuget add source https://nuget.pkg.github.com/erdembayar/index.json -n GPR -u testUser -p ${{ secrets.PUSH_TOKEN }} --store-password-in-clear-text
+      
+    - name: Push generated package to GitHub registry
+      run: |
+        for f in erdemDevice/bin/Release/*.nupkg
+        do
+          dotnet nuget push $f --source "GPR" --skip-duplicate --api-key ${{ secrets.PUSH_TOKEN }}
+        done
+        
+        for f in erdemDevice/bin/Release/*.snupkg
+        do
+          dotnet nuget push $f --source "GPR" --skip-duplicate --api-key ${{ secrets.PUSH_TOKEN }}
+        done
+      shell: bash
