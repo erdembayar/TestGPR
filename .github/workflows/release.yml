@@ -54,7 +54,7 @@ jobs:
       with:
         draft: false
         prerelease: false
-        release_name: ${{ steps.get-release-version }}"
+        release_name: ${{ steps.get-release-version.output }}"
         tag_name: ${{ github.ref }}
         body_path: CHANGELOG.md
       env:
@@ -66,5 +66,5 @@ jobs:
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: erdemDevice/bin/Release/erdemDevice.1.0.0.nupkg
-        asset_name: ${{ steps.get-release-version }}"
+        asset_name: ${{ steps.get-release-version.output }}"
         asset_content_type: application/gzip
