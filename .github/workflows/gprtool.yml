@@ -26,16 +26,19 @@ jobs:
     - name: Add private GitHub registry to NuGet
       run: dotnet nuget add source https://nuget.pkg.github.com/erdembayar/index.json -n GPR -u erdembayar -p ${{ secrets.PUSH_TOKEN }} --store-password-in-clear-text
       
+    - name: Install tool for working with the GPR
+      run: dotnet tool install -g gpr
+        
     - name: Push generated package to GitHub registry
       run: |
         for f in erdemDevice/bin/Release/*.nupkg
         do
-          gpr push $file.FullName -k ${{secrets.PUSH_TOKEN}}
+          gpr push $f -k ${{secrets.PUSH_TOKEN}}
         done
         
         for f in erdemDevice/bin/Release/*.snupkg
         do
-          gpr push $file.FullName -k ${{secrets.PUSH_TOKEN}}
+          gpr push $f -k ${{secrets.PUSH_TOKEN}}
         done
         
 #       powershell
