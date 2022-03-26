@@ -50,5 +50,5 @@ jobs:
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: erdemDevice/bin/Release/erdemDevice.1.0.0.nupkg
-        asset_name: erdemDevice.${{APPVER}}.nupkg
+        asset_name: erdemDevice.${$APPVER}.nupkg
         asset_content_type: application/gzip
