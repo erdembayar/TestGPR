@@ -6,7 +6,7 @@ on:
   pull_request:
     branches: [ main ]
 env:
-    PUBLICENV: Available111
+    PUBLICENV: 2.22.2
 
 jobs:
   build_release1:
@@ -46,7 +46,7 @@ jobs:
     - name: Get color
       run: echo "The selected color is ${{ steps.random-color-generator.outputs.SELECTED_COLOR }}"
     - name: GetReleaseVersion
-      run: echo "erdemDevice${{APPVER}}.nupkg"
+      run: echo "erdemDevice${{PUBLICENV}}.nupkg"
       id: GetReleaseVersion    
     - name: release
       uses: actions/create-release@v1
