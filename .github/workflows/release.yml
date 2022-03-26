@@ -46,7 +46,7 @@ jobs:
     - name: Get color
       run: echo "The selected color is ${{ steps.random-color-generator.outputs.SELECTED_COLOR }}"
     - name: GetReleaseVersion
-      run: echo erdemDevice"${{APPVER}}".nupkg  
+      run: echo "erdemDevice${{APPVER}}.nupkg"
       id: GetReleaseVersion    
     - name: release
       uses: actions/create-release@v1
