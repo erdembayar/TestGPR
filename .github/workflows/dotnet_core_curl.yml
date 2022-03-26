@@ -1,4 +1,4 @@
-name: .NET
+name: Curl push
 
 on:
   push:
