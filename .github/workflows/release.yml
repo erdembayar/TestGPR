@@ -5,12 +5,12 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
-
+env:
+    PUBLICENV: "Release_"
 jobs:
   build_release1:
     env:
-        APPVER: 0.11.1
-        
+        APPVER: 0.11.2
     runs-on: ubuntu-latest
 
     steps:
@@ -28,17 +28,20 @@ jobs:
     - name: Test
       run: dotnet test --no-build --verbosity normal
     - name: Pack 
-      run: dotnet pack --no-build -c Release erdemDevice/erdemDevice.csproj      
+      run: dotnet pack --no-build -c Release erdemDevice/erdemDevice.csproj        
     - name: version
-      run: echo "${APPVER}"
-      id: version      
+      run: echo "::set-output name=RELEASE_NAME::${PUBLICENV}${APPVER}"
+      id: version
+    - name: GetReleaseVersion
+      run: echo "::set-output name=CURRENT_VERSION::erdemDevice.${APPVER}"
+      id: get-release-version    
     - name: release
       uses: actions/create-release@v1
       id: create_release
       with:
         draft: false
         prerelease: false
-        release_name: ${APPVER}
+        release_name: ${{ steps.version.outputs.RELEASE_NAME }}
         tag_name: ${{ github.ref }}
         body_path: CHANGELOG.md
       env:
@@ -49,15 +52,6 @@ jobs:
         GITHUB_TOKEN: ${{ github.token }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./bin/azblogfilter.linux-amd64.tar.gz
-        asset_name: azblogfilter.linux-amd64.tar.gz
-        asset_content_type: application/gzip
-    - name: upload artifact
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: erdemDevice/bin/Release/erdemDevice*.nupkg
-        asset_name: erdemDevice.${APPVER}.gz
+        asset_path: erdemDevice/bin/Release/erdemDevice.1.0.0.nupkg
+        asset_name: ${{ steps.get-release-version.outputs.CURRENT_VERSION }}.nupkg"
         asset_content_type: application/gzip
