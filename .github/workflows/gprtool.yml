@@ -23,22 +23,25 @@ jobs:
     - name: Pack 
       run: dotnet pack --no-build -c Release erdemDevice/erdemDevice.csproj
     
-    - name: Add private GitHub registry to NuGet
-      run: dotnet nuget add source https://nuget.pkg.github.com/erdembayar/index.json -n GPR -u erdembayar -p ${{ secrets.PUSH_TOKEN }} --store-password-in-clear-text
+    # gpr tool doesn't use nuget.config, so no need to save password, if needed only source url is enough.
+    # Password encryption is not supported in MAC, Linux.
+    # - name: Add private GitHub registry to NuGet
+    #   run: dotnet nuget add source https://nuget.pkg.github.com/erdembayar/index.json -n GPR -u erdembayar -p ${{ secrets.PUSH_TOKEN }} --store-password-in-clear-text
       
     - name: Install tool for working with the GPR
       run: dotnet tool install -g gpr
-        
+    
+    # gpr tool requires to use -k apikey even though it was already in nuget.config file.
     - name: Push generated package to GitHub registry
       run: |
         for f in erdemDevice/bin/Release/*.nupkg
         do
-          gpr push $f -k ${{secrets.PUSH_TOKEN}}
+          gpr push $f -k ${{secrets.PUSH_TOKEN}} # Here -k apikey required for gpr
         done
         
         for f in erdemDevice/bin/Release/*.snupkg
         do
-          gpr push $f -k ${{secrets.PUSH_TOKEN}}
+          gpr push $f -k ${{secrets.PUSH_TOKEN}} # Here -k apikey required for gpr
         done
         
 #       powershell
