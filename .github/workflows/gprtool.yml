@@ -1,5 +1,8 @@
 name: GPR push
-
+# on:
+#   push:
+#   pull_request:
+  
 # on: [push]
 
 on:
@@ -7,7 +10,7 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
-    
+
 jobs:
   build:
 
@@ -28,7 +31,15 @@ jobs:
       run: dotnet test --no-build -c Release
     - name: Pack 
       run: dotnet pack --no-build -c Release erdemDevice/erdemDevice.csproj
-    
+
+    - name: Upload Artifact
+    # if: matrix.os == 'ubuntu-latest'
+    uses: actions/upload-artifact@v2
+    with:
+      name: nupkg
+      # path: ./src/${{ env.PROJECT_NAME }}/bin/Release/*.nupkg
+      path: erdemDevice/bin/Release/*.nupkg
+
     # gpr tool doesn't use nuget.config, so no need to save password, if needed only source url is enough.
     # Password encryption is not supported in MAC, Linux.
     # - name: Add private GitHub registry to NuGet

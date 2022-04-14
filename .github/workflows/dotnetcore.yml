@@ -1,5 +1,9 @@
 name: Dotnet nuget push with apikey in cli
 
+# on:
+#   push:
+#   pull_request:
+  
 # on: [push]
 on: [pull]
 
