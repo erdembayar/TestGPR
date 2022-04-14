@@ -17,24 +17,38 @@ jobs:
     - uses: actions/checkout@v2
       with:
         fetch-depth: 0    
+
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 6.0.x
+
     - name: Restore dependencies
       run: dotnet restore
+
     - name: Build with dotnet
       run: dotnet build --no-restore --configuration Release
+
     - name: Test
       run: dotnet test --no-build --verbosity normal
+
     - name: Pack 
-      run: dotnet pack --no-build -c Release erdemDevice/erdemDevice.csproj        
+      run: dotnet pack --no-build -c Release erdemDevice/erdemDevice.csproj      
+
     - name: version
       run: echo "::set-output name=RELEASE_NAME::${PUBLICENV}${APPVER}"
       id: version
+
     - name: GetReleaseVersion
       run: echo "::set-output name=CURRENT_VERSION::erdemDevice.${APPVER}"
-      id: get-release-version    
+      id: get-release-version
+
+    - name: Setup NuGet.exe for use with actions
+      uses: NuGet/setup-nuget@v1
+
+    - name: Run nuget help
+      run: nuget help
+
     - name: release
       uses: actions/create-release@v1
       id: create_release
@@ -46,6 +60,7 @@ jobs:
         body_path: CHANGELOG.md
       env:
         GITHUB_TOKEN: ${{ github.token }}
+
     - name: upload linux artifact
       uses: actions/upload-release-asset@v1
       env:

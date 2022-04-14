@@ -1,6 +1,7 @@
-name: Dotnet push
+name: Dotnet nuget push with apikey in cli
 
-on: [push]
+# on: [push]
+on: [pull]
 
 jobs:
   build:

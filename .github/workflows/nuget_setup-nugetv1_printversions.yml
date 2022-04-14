@@ -1,0 +1,36 @@
+name: GPR push
+
+on: [push, pull_request]
+
+# jobs:
+#   build:
+
+#     runs-on: ubuntu-latest
+
+#     steps:
+#     - name: Checkout
+#       uses: actions/checkout@v2
+#     - name: Fetch
+#       run: git fetch --prune --unshallow
+
+#     - name: Setup NuGet.exe for use with actions
+#       uses: NuGet/setup-nuget@v1
+
+#     - name: Run nuget help
+#       run: nuget help
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest, macOS-latest]
+        nuget: [latest, preview, 4.x, 5.3.1, 5.7.x, 5.11.x]
+    name: NuGet@${{ matrix.nuget }} sample
+    steps:
+      - uses: actions/checkout@master
+      - name: Setup NuGet.exe
+        uses: nuget/setup-nuget@v1
+        with:
+          nuget-version: ${{ matrix.nuget }}
+      - run: nuget help
