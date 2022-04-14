@@ -5,7 +5,7 @@ name: Dotnet nuget push with apikey in cli
 #   pull_request:
   
 # on: [push]
-on: [pull]
+on: [pull_request]
 
 jobs:
   build:
@@ -27,7 +27,15 @@ jobs:
       run: dotnet test --no-build -c Release
     - name: Pack 
       run: dotnet pack --no-build -c Release erdemDevice/erdemDevice.csproj
-    
+
+    - name: Upload Artifact
+      # if: matrix.os == 'ubuntu-latest'
+      uses: actions/upload-artifact@v2
+      with:
+        name: nupkg
+        # path: ./src/${{ env.PROJECT_NAME }}/bin/Release/*.nupkg
+        path: erdemDevice/bin/Release/*.nupkg
+            
     # Password encryption is not supported in MAC, Linux.
     - name: Add private GitHub registry to NuGet
       run: dotnet nuget add source https://nuget.pkg.github.com/erdembayar/index.json -n GPR # -u erdembayar -p ${{ secrets.PUSH_TOKEN }} --store-password-in-clear-text
