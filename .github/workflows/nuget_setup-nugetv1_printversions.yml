@@ -1,10 +1,10 @@
-name: GPR push
+name: nuget setup print version
 
-# on:
-#   push:
-#   pull_request:
+on:
+  push:
+  pull_request:
   
-on: [push, pull_request]
+# on: [push, pull_request]
 
 # jobs:
 #   build:
